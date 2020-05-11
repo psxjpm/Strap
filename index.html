@@ -78,43 +78,33 @@ function handleMidiMessage(message) {
   // Parse the MIDIMessageEvent.
   const {command, channel, note, velocity} = parseMidiMessage(message)
   console.log('midi message', message);
-  if (command === 9) {
-    // note on
-
-    // TODO Implement switch in Pd to toggle between play and pause notes 60 and 61
-    console.log('Note '+note+' (velocity '+velocity+')');
-    if (note === 60) {
-      // C3...
+  if (command === 11) {
+    // CC 0 Bank Select: https://www.midi.org/specifications-old/item/table-3-control-change-messages-data-bytes-2
+    // https://github.com/djipco/webmidi/blob/master/src/webmidi.js
+    if (note === 0){
+    // TODO Implement switch in Pd to toggle between play and pause 
       handlePlay();
     }
-
-    if (note === 61) {
+    
+    if (note === 1) {
       handlePause();
     }
 
     // TODO Implement with ssCurrentBar
-    if (note === 62) {
+    if (note === 2) {
       handleLoop();
     }
 
-    if (note === 63) {
+    if (note === 3) {
       handleRewind();
     }
 
-    if (note === 64) {
+    if (note === 4) {
       handleForward();
     }
 
-    if (note === 65) {
+    if (note === 5) {
       handleSpeed();
-    }
-  }
-
-//TODO CC message tests: https://github.com/djipco/webmidi/blob/master/src/webmidi.js
-  if (command === 11) {
-    if (note === 1){
-       //modulation wheel coarse
-      handleTest();
     }
   }
 }
