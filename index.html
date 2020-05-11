@@ -1,12 +1,165 @@
-<!doctype HTML>
-<html>
-<head>
-<title> The Strap </title>
-<link rel="stylesheet" type="text/css" href="style.css">
-</head>
+<!-- This is a modified version of: https://github.com/cgreenhalgh/soundslice-demo/blob/master/public/index.html/  -->
 
-<body>
-  <p>Hello world</p>
-  <iframe src="https://www.soundslice.com/slices/-zgVc/embed/" width="100%" height="500" frameBorder="0" allowfullscreen></iframe>
-</body>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Soundslice test</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+<div>
+  <div>
+    <select id="midiin">
+      <option value="">(no MIDI>)</option>
+    </select>
+    <input type="button" value="start" onclick="handlestart()">
+    <input type="button" value="play (test)" onclick="handleplay()">
+
+  </div>
+  <div>
+    <!-- a slice I made to test with... -->
+    <!-- TODO Review SoundSlice iframe parameters https://www.soundslice.com/help/player-api/ -->
+    <iframe id="ssembed" src="https://www.soundslice.com/slices/rg5Vc/embed/?api=1" width="100%" height="500" frameBorder="0" allowfullscreen></iframe>
+    <!-- <iframe id="ssembed" src=""https://www.soundslice.com/slices/-zgVc/embed/?api=1" width="100%" height="500" frameBorder="0" allowfullscreen></iframe> -->
+
+  </div>
+</div>
+
+<script type="text/javascript">
+var ssiframe = document.getElementById('ssembed').contentWindow;
+var midiin = document.getElementById("midiin");
+var midiinputs = {};
+
+function load() {
+  console.log("load event detected!");
+  navigator.requestMIDIAccess()
+  .then(function(access) {
+     // Get lists of available MIDI controllers
+     const inputs = access.inputs.values();
+     for (let input of inputs) {
+       console.log('MIDI input:', input);
+       var option = document.createElement("option");
+       option.text = input.name;
+       option.setAttribute('value', input.id);
+       midiin.add(option);
+       midiinputs[input.id] = input;
+     }
+  });
+}
+window.onload = load;
+
+function handlestart() {
+  // option - choice of midi?
+
+  var midiid = midiin.options[midiin.selectedIndex].value;
+  if ( ! midiid ) {
+    alert('Please select MIDI input');
+    return;
+  }
+  console.log('use MIDI input '+midiid);
+  midiinputs[midiid].onmidimessage = handleMidiMessage;
+}
+//from https://stackoverflow.com/questions/40902864/how-to-parse-web-midi-api-input-messages-onmidimessage
+/**
+ * Parse basic information out of a MIDI message.
+ */
+function parseMidiMessage(message) {
+  return {
+    command: message.data[0] >> 4,
+    channel: message.data[0] & 0xf,
+    note: message.data[1],
+    velocity: message.data[2] / 127
+  }
+}
+function handleMidiMessage(message) {
+
+  // Parse the MIDIMessageEvent.
+  const {command, channel, note, velocity} = parseMidiMessage(message)
+  console.log('midi message', message);
+  if (command === 9) {
+    // note on
+
+    // TODO Implement switch in Pd to toggle between play and pause notes 60 and 61
+    console.log('Note '+note+' (velocity '+velocity+')');
+    if (note === 60) {
+      // C3...
+      handlePlay();
+    }
+
+    if (note === 61) {
+      handlePause();
+    }
+
+    // TODO Implement with ssCurrentBar
+    if (note === 62) {
+      handleLoop();
+    }
+
+    if (note === 63) {
+      handleRewind();
+    }
+
+    if (note === 64) {
+      handleForward();
+    }
+
+    if (note === 65) {
+      handleSpeed();
+    }
+  }
+
+//TODO CC message tests: https://github.com/djipco/webmidi/blob/master/src/webmidi.js
+  if (command === 11) {
+    if (note === 1){
+      handleTest();
+    }
+  }
+}
+
+//TODO CC message tests:
+function handleTest() {
+  console.log('test');
+  ssiframe.postMessage('{"method": "play"}', 'https://www.soundslice.com');
+}
+
+function handlePlay() {
+  console.log('play');
+  ssiframe.postMessage('{"method": "play"}', 'https://www.soundslice.com');
+}
+
+function handlePause() {
+  console.log('pause');
+  ssiframe.postMessage('{"method": "pause"}', 'https://www.soundslice.com');
+}
+
+// TODO:
+function handleLoop() {
+  console.log('set loop');
+  // Set loop: from timecode 1.5 seconds to timecode 3 seconds
+  ssiframe.postMessage('{"method": "setLoop", "arg": [1.5, 3]}', 'https://www.soundslice.com');
+}
+
+function handleRewind() {
+  console.log('rewind');
+  // Seek to timecode 3.5 seconds - TODO: ssCurrentTime - 1
+  ssiframe.postMessage('{"method": "seek", "arg": 3.5}', 'https://www.soundslice.com');
+}
+
+function handleForward() {
+  console.log('forward');
+  // Seek to timecode 3.5 seconds - TODO: ssCurrentTime + 1
+  ssiframe.postMessage('{"method": "seek", "arg": 3.5}', 'https://www.soundslice.com');
+}
+
+function handleSpeed() {
+  console.log('speed');
+  // Change speed to 50% - TODO: 25%, 75%. 100%
+  ssiframe.postMessage('{"method": "setSpeed", "arg": 0.5}', 'https://www.soundslice.com');
+}
+
+</script>
+  </body>
 </html>
+
