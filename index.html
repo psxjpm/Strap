@@ -15,7 +15,6 @@
       <option value="">(no MIDI>)</option>
     </select>
     <input type="button" value="start" onclick="handlestart()">
-    <input type="button" value="play (test)" onclick="handleplay()">
 
   </div>
   <div>
@@ -82,15 +81,15 @@ function handleMidiMessage(message) {
     // CC 0 Bank Select: https://www.midi.org/specifications-old/item/table-3-control-change-messages-data-bytes-2
     // https://github.com/djipco/webmidi/blob/master/src/webmidi.js
     if (note === 0){
-    // TODO Implement switch in Pd to toggle between play and pause 
+    // TODO Implement switch in Pd to toggle between play and pause
       handlePlay();
     }
-    
+
     if (note === 1) {
       handlePause();
     }
 
-    // TODO Implement with ssCurrentBar
+    // TODO Implement with ssCurrentBar, see: https://www.soundslice.com/help/player-api/#events
     if (note === 2) {
       handleLoop();
     }
@@ -104,7 +103,19 @@ function handleMidiMessage(message) {
     }
 
     if (note === 5) {
-      handleSpeed();
+      handleSpeed100();
+    }
+
+    if (note === 6) {
+      handleSpeed75();
+    }
+
+    if (note === 7) {
+      handleSpeed50();
+    }
+
+    if (note === 8) {
+      handleSpeed25();
     }
   }
 }
@@ -144,13 +155,27 @@ function handleForward() {
   ssiframe.postMessage('{"method": "seek", "arg": 3.5}', 'https://www.soundslice.com');
 }
 
-function handleSpeed() {
-  console.log('speed');
-  // Change speed to 50% - TODO: 25%, 75%. 100%
+function handleSpeed100() {
+  console.log('speed: 100');
+  ssiframe.postMessage('{"method": "setSpeed", "arg": 1}', 'https://www.soundslice.com');
+}
+
+function handleSpeed75() {
+  console.log('speed: 75');
+  ssiframe.postMessage('{"method": "setSpeed", "arg": 0.75}', 'https://www.soundslice.com');
+}
+
+function handleSpeed50() {
+  console.log('speed: 50');
   ssiframe.postMessage('{"method": "setSpeed", "arg": 0.5}', 'https://www.soundslice.com');
 }
+
+function handleSpeed25() {
+  console.log('speed: 25');
+  ssiframe.postMessage('{"method": "setSpeed", "arg": 0.25}', 'https://www.soundslice.com');
+}
+
 
 </script>
   </body>
 </html>
-
