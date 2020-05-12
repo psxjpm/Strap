@@ -1,2 +1,2 @@
-# Strap
+# The strap
 The strap
