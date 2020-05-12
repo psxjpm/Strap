@@ -1,2 +1,2 @@
 # Strap
-Site for the the strap
+The strap
