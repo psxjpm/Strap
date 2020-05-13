@@ -1,1 +1,41 @@
-foo
+#N canvas 173 239 450 346 10;
+#X text 242 108 Rewind;
+#X text 243 78 Loop;
+#X text 243 45 Play/Pause;
+#X text 242 142 Forward;
+#X obj 21 44 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 47 44 handlePlayPause-test~ 0 1;
+#X text 240 173 Speed 100;
+#X text 239 203 Speed 75;
+#X text 240 235 Speed 50;
+#X text 239 261 Speed 25;
+#X obj 21 107 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 22 139 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 23 201 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 20 75 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 24 232 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 23 260 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 22 173 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 47 76 abstraction-test~ 2;
+#X obj 47 107 abstraction-test~ 3;
+#X obj 47 139 abstraction-test~ 4;
+#X obj 47 172 abstraction-test~ 5;
+#X obj 47 202 abstraction-test~ 6;
+#X obj 47 231 abstraction-test~ 7;
+#X obj 46 258 abstraction-test~ 8;
+#X connect 4 0 5 0;
+#X connect 10 0 18 0;
+#X connect 11 0 19 0;
+#X connect 12 0 21 0;
+#X connect 13 0 17 0;
+#X connect 14 0 22 0;
+#X connect 15 0 23 0;
+#X connect 16 0 20 0;
