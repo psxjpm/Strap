@@ -119,10 +119,17 @@ function handleMidiMessage(message) {
   }
 }
 
-function handleTest() {
-  console.log('test');
-  ssiframe.postMessage('{"method": "play"}', 'https://www.soundslice.com');
-}
+// TODO testing event listener: Handle inbound current time messages.
+window.addEventListener('message', function(event) {
+    var cmd = JSON.parse(event.data);
+    if (cmd.method === 'ssCurrentTime') {
+        console.log('Current time is ' + cmd.arg + ' seconds.');
+    }
+});
+
+// Request current time.
+ssiframe.postMessage('{"method": "getCurrentTime"}', 'https://www.soundslice.com');
+
 
 function handlePlay() {
   console.log('play');
@@ -133,8 +140,6 @@ function handlePause() {
   console.log('pause');
   ssiframe.postMessage('{"method": "pause"}', 'https://www.soundslice.com');
 }
-
-// TODO: Test function
 function handleLoop() {
   console.log('set loop');
   // Handle inbound current time messages.
