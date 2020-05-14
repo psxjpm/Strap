@@ -88,14 +88,13 @@ function handleMidiMessage(message) {
       handlePause();
     }
 
-    // TODO Implement with ssCurrentBar, see: https://www.soundslice.com/help/player-api/#events
     if (note === 2) {
       handleLoop();
     }
 
     if (note === 3) {
-      // handleRewind();
-      handleTest();
+      handleRewind();
+      // handleTest();
     }
 
     if (note === 4) {
@@ -121,17 +120,18 @@ function handleMidiMessage(message) {
 }
 
 // TODO testing event listener: Handle inbound current time messages.
-window.addEventListener('message', function(event) {
-    var cmd = JSON.parse(event.data);
-    if (cmd.method === 'ssCurrentTime') {
-        console.log('Current time is ' + cmd.arg + ' seconds.');
-    }
-});
-
-// Request current time.
-function handleTest(){
-ssiframe.postMessage('{"method": "getCurrentTime"}', 'https://www.soundslice.com');
-}
+// window.addEventListener('message', function(event) {
+//     var cmd = JSON.parse(event.data);
+//     if (cmd.method === 'ssCurrentTime') {
+//         console.log('Current time is ' + cmd.arg + ' seconds.');
+//         var time = cmd.arg
+//     }
+// });
+//
+// // Request current time.
+// function handleTest(){
+// ssiframe.postMessage('{"method": "getCurrentTime"}', 'https://www.soundslice.com');
+// }
 
 function handlePlay() {
   console.log('play');
@@ -149,14 +149,11 @@ function handleLoop() {
       var cmd = JSON.parse(event.data);
       if (cmd.method === 'ssCurrentBar') {
           console.log('Current bar is ' + cmd.arg);
-          ssiframe.postMessage('{"method": "setLoop", "arg": cmd.arg}', 'https://www.soundslice.com');
+          ssiframe.postMessage('{"method": "setLoop", "arg": time}', 'https://www.soundslice.com');
       }
   });
-  // Request current bar
-  ssiframe.postMessage('{"method": "getCurrentBar"}', 'https://www.soundslice.com');
 }
 
-// TODO: Test function
 function handleRewind() {
   console.log('rewind');
   // Handle inbound current time messages.
@@ -164,7 +161,8 @@ function handleRewind() {
       var cmd = JSON.parse(event.data);
       if (cmd.method === 'ssCurrentTime') {
           console.log('Current time is ' + cmd.arg + ' seconds.');
-          ssiframe.postMessage('{"method": "seek", "arg": cmd.arg - 1}', 'https://www.soundslice.com');
+          var time = cmd.arg + 1
+          ssiframe.postMessage('{"method": "seek", "arg": time}', 'https://www.soundslice.com');
       }
   });
   // Request current time.
