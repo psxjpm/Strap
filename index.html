@@ -94,7 +94,8 @@ function handleMidiMessage(message) {
     }
 
     if (note === 3) {
-      handleRewind();
+      // handleRewind();
+      handleTest();
     }
 
     if (note === 4) {
@@ -128,8 +129,9 @@ window.addEventListener('message', function(event) {
 });
 
 // Request current time.
+function handleTest(){
 ssiframe.postMessage('{"method": "getCurrentTime"}', 'https://www.soundslice.com');
-
+}
 
 function handlePlay() {
   console.log('play');
