@@ -161,7 +161,8 @@ function handleRewind() {
       var cmd = JSON.parse(event.data);
       if (cmd.method === 'ssCurrentTime') {
           console.log('Current time is ' + cmd.arg + ' seconds.');
-          var time = cmd.arg + 1
+          var time = cmd.arg + 1.0
+          console.log('Now time is ' + cmd.arg + ' seconds.');
           ssiframe.postMessage('{"method": "seek", "arg": time}', 'https://www.soundslice.com');
       }
   });
