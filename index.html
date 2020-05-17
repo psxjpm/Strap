@@ -136,7 +136,7 @@ function handleRewind() {
   window.addEventListener('message', function(event) {
       var cmd = JSON.parse(event.data);
       const test = cmd.arg + 1;
-      var time = JSON.stringify({"method": "seek", "arg": test});
+      const time = JSON.stringify({"method": "seek", "arg": test});
       console.log(test);
   });
   // Request current time.
