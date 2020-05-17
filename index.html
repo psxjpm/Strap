@@ -49,7 +49,7 @@ window.onload = load;
 
 function handlestart() {
 
-  var midiid = midiin.option[midiin.selectedIndex].value;
+  var midiid = midiin.options[midiin.selectedIndex].value;
   if ( ! midiid ) {
     alert('Please select MIDI input');
     return;
@@ -91,8 +91,8 @@ function handleMidiMessage(message) {
     }
 
     if (note === 3) {
-      // handleRewind();
-      handleTest();
+      handleRewind();
+      // handleTest();
     }
 
     if (note === 4) {
@@ -117,21 +117,6 @@ function handleMidiMessage(message) {
   }
 }
 
-// TODO testing event listener: Handle inbound current time messages.
-window.addEventListener('message', function(event) {
-    var data = JSON.parse(event.data);
-    if (data.type === 'arg'){
-      document.getElementById('ssCurrentTime').value = data.message;
-      ssiframe.postMessage(JSON.stringify({type: 'arg'}), 'https://www.soundslice.com');
-    }
-});
-
-// Request current time.
-function handleTest(){
-  ssiframe.postMessage('{"method": "getCurrentTime"}', 'https://www.soundslice.com');
-  ssiframe.postMessage('{"method": "getDuration"}', 'https://www.soundslice.com');
-}
-
 function handlePlay() {
   console.log('play');
   ssiframe.postMessage('{"method": "play"}', 'https://www.soundslice.com');
@@ -143,14 +128,6 @@ function handlePause() {
 }
 function handleLoop() {
   console.log('set loop');
-  // Handle inbound current time messages.
-  window.addEventListener('message', function(event) {
-      var cmd = JSON.parse(event.data);
-      if (cmd.method === 'ssCurrentBar') {
-          console.log('Current bar is ' + cmd.arg);
-          ssiframe.postMessage('{"method": "setLoop", "arg": time}', 'https://www.soundslice.com');
-      }
-  });
 }
 
 function handleRewind() {
@@ -158,15 +135,12 @@ function handleRewind() {
   // Handle inbound current time messages.
   window.addEventListener('message', function(event) {
       var cmd = JSON.parse(event.data);
-      if (cmd.method === 'ssCurrentTime') {
-          console.log('Current time is ' + cmd.arg + ' seconds.');
-          var time = cmd.arg + 1.0
-          console.log('Now time is ' + cmd.arg + ' seconds.');
-          ssiframe.postMessage('{"method": "seek", "arg": time}', 'https://www.soundslice.com');
-      }
+      var test = JSON.stringify({"method": "seek", "arg": new Number(cmd.arg)});
+      console.log(test);
   });
   // Request current time.
   ssiframe.postMessage('{"method": "getCurrentTime"}', 'https://www.soundslice.com');
+  ssiframe.postMessage(test, 'https://www.soundslice.com');
 }
 
 function handleForward() {
