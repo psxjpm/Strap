@@ -136,11 +136,12 @@ function handleRewind() {
   window.addEventListener('message', function(event) {
       var cmd = JSON.parse(event.data);
       const test = cmd.arg + 1;
+      var time = JSON.stringify({"method": "seek", "arg": test});
       console.log(test);
   });
   // Request current time.
   ssiframe.postMessage('{"method": "getCurrentTime"}', 'https://www.soundslice.com');
-  ssiframe.postMessage('{"method": "seek", "arg": test}', 'https://www.soundslice.com');
+  ssiframe.postMessage(time, 'https://www.soundslice.com');
 }
 
 function handleForward() {
