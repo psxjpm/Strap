@@ -135,12 +135,12 @@ function handleRewind() {
   // Handle inbound current time messages.
   window.addEventListener('message', function(event) {
       var cmd = JSON.parse(event.data);
-      var test = JSON.stringify({"method": "seek", "arg": new Number(cmd.arg + 1)});
+      var test = cmd.arg + 1;
       console.log(test);
   });
   // Request current time.
   ssiframe.postMessage('{"method": "getCurrentTime"}', 'https://www.soundslice.com');
-  ssiframe.postMessage(test, 'https://www.soundslice.com');
+  ssiframe.postMessage('{"method": "seek", "arg": test}', 'https://www.soundslice.com');
 }
 
 function handleForward() {
