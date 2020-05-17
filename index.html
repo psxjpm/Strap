@@ -138,10 +138,10 @@ function handleRewind() {
       const test = cmd.arg + 1;
       const time = JSON.stringify({"method": "seek", "arg": test});
       console.log(test);
+      ssiframe.postMessage(time, 'https://www.soundslice.com');
   });
   // Request current time.
   ssiframe.postMessage('{"method": "getCurrentTime"}', 'https://www.soundslice.com');
-  ssiframe.postMessage(time, 'https://www.soundslice.com');
 }
 
 function handleForward() {
