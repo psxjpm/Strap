@@ -135,7 +135,7 @@ function handleRewind() {
   // Handle inbound current time messages.
   window.addEventListener('message', function(event) {
       var cmd = JSON.parse(event.data);
-      var test = cmd.arg + 1;
+      const test = cmd.arg + 1;
       console.log(test);
   });
   // Request current time.
