@@ -126,21 +126,20 @@ function handlePause() {
   console.log('pause');
   ssiframe.postMessage('{"method": "pause"}', 'https://www.soundslice.com');
 }
+
 function handleLoop() {
   console.log('set loop');
+  ssiframe.postMessage('{"method": "clearLoop"}', 'https://www.soundslice.com');
   window.addEventListener('message', function(event){
     var cmd = JSON.parse(event.data);
     if (cmd.method === "ssCurrentTime"){
       var loopStart = cmd.arg;
     }
-    if (cmd.method === "ssDuration"){
-      var loopEnd = cmd.arg;
-    }
-    ssiframe.postMessage(JSON.stringify({"method": "setLoop", "arg": [loopStart, loopEnd]}), 'https://www.soundslice.com');
+    console.log(loopStart);
+    ssiframe.postMessage(JSON.stringify({"method": "setLoop", "arg": [loopStart, 41.021]}), 'https://www.soundslice.com');
   });
 
   ssiframe.postMessage('{"method": "getCurrentTime"}', 'https://www.soundslice.com');
-  ssiframe.postMessage('{"method": "getDuration"}', 'https://www.soundslice.com');
 }
 
 function handleForward() {
