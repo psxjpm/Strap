@@ -46,6 +46,33 @@ function load() {
   });
 }
 window.onload = load;
+//TODO try addEventListener here
+//Handle inbound messages
+var callbacks = [];
+window.addEventListener('message', function(event){
+    var message = JSON.parse(event.data);
+    for (var i=0; i<callbacks.length; i++) {
+      var callback = callbacks[i];
+      if (callback.method == message.method) {
+        callback.callback(message.arg);
+        callbacks = splice(i, 1);
+        i--;
+      }
+    }
+})
+
+function withCurrentTime(callback) {
+    callbacks.push({method:"ssCurrentTime", callback: callback});
+    ssiframe.postMessage('{"method": "getCurrentTime"}', 'https://www.soundslice.com');
+}
+
+function handleForward() {
+    withCurrentTime(function(currentTime) {
+      ssiframe.postMessage(JSON.stringify({"method": "seek", "arg": currentTime + 1}), 'https://www.soundslice.com');
+    })
+}
+
+
 
 function handlestart() {
 
@@ -127,36 +154,36 @@ function handlePause() {
   ssiframe.postMessage('{"method": "pause"}', 'https://www.soundslice.com');
 }
 
-function handleLoop() {
-  console.log('set loop');
-  ssiframe.postMessage('{"method": "clearLoop"}', 'https://www.soundslice.com');
-  window.addEventListener('message', function(event){
-    var cmd = JSON.parse(event.data);
-    if (cmd.method === "ssCurrentTime"){
-      var loopStart = cmd.arg;
-    }
-    console.log(loopStart);
-    ssiframe.postMessage(JSON.stringify({"method": "setLoop", "arg": [loopStart, 41.021]}), 'https://www.soundslice.com');
-  });
 
-  ssiframe.postMessage('{"method": "getCurrentTime"}', 'https://www.soundslice.com');
-}
 
-function handleForward() {
-  console.log('forward');
-  // Handle inbound current time messages.
-  window.addEventListener('message', function(event) {
-    var cmd = JSON.parse(event.data);
-    ssiframe.postMessage(JSON.stringify({"method": "seek", "arg": cmd.arg + 1}), 'https://www.soundslice.com');
+// function handleLoop() {
+//   console.log('set loop');
+//   ssiframe.postMessage('{"method": "clearLoop"}', 'https://www.soundslice.com');
+//   window.addEventListener('message', function(event){
+//     var cmd = JSON.parse(event.data);
+//     if (cmd.method === "ssCurrentTime"){
+//       var loopStart = cmd.arg;
+//     }
+//     console.log(loopStart);
+//     ssiframe.postMessage(JSON.stringify({"method": "setLoop", "arg": [loopStart, 41.021]}), 'https://www.soundslice.com');
+//   });
+//
+//   ssiframe.postMessage('{"method": "getCurrentTime"}', 'https://www.soundslice.com');
+// }
 
-  });
-  ssiframe.postMessage('{"method": "getCurrentTime"}', 'https://www.soundslice.com');
-
-}
+// function handleForward() {
+//   console.log('forward');
+//   window.addEventListener('message', function(event) {
+//     var cmd = JSON.parse(event.data);
+//     ssiframe.postMessage(JSON.stringify({"method": "seek", "arg": cmd.arg + 1}), 'https://www.soundslice.com');
+//
+//   });
+//   ssiframe.postMessage('{"method": "getCurrentTime"}', 'https://www.soundslice.com');
+//
+// }
 
 function handleSeek() {
   console.log('forward');
-  // Seek to timecode 3.5 seconds - TODO: ssCurrentTime + 1
   ssiframe.postMessage('{"method": "seek", "arg": 3.5}', 'https://www.soundslice.com');
 }
 
@@ -179,7 +206,6 @@ function handleSpeed25() {
   console.log('speed: 25');
   ssiframe.postMessage('{"method": "setSpeed", "arg": 0.25}', 'https://www.soundslice.com');
 }
-
 
 </script>
   </body>
