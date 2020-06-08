@@ -66,6 +66,11 @@ function withCurrentTime(callback) {
     ssiframe.postMessage('{"method": "getCurrentTime"}', 'https://www.soundslice.com');
 }
 
+// function withCurrentBar(callback) {
+//     callbacks.push({method:"ssCurrentBar", callback: callback});
+//     ssiframe.postMessage('{"method": "getCurrentBar"}', 'https://www.soundslice.com');
+// }
+
 function handlestart() {
   var midiid = midiin.options[midiin.selectedIndex].value;
   if ( ! midiid ) {
@@ -144,29 +149,23 @@ function handlePause() {
   ssiframe.postMessage('{"method": "pause"}', 'https://www.soundslice.com');
 }
 
-// function handleLoop() {
-//   console.log('set loop');
-//   ssiframe.postMessage('{"method": "clearLoop"}', 'https://www.soundslice.com');
-//   window.addEventListener('message', function(event){
-//     var cmd = JSON.parse(event.data);
-//     if (cmd.method === "ssCurrentTime"){
-//       var loopStart = cmd.arg;
-//     }
-//     console.log(loopStart);
-//     ssiframe.postMessage(JSON.stringify({"method": "setLoop", "arg": [loopStart, 41.021]}), 'https://www.soundslice.com');
-//   });
-//
-//   ssiframe.postMessage('{"method": "getCurrentTime"}', 'https://www.soundslice.com');
-// }
+function handleLoop() {
+    withCurrentTime(function(currentTime) {
+        console.log('loop');
+        ssiframe.postMessage(JSON.stringify({"method": "setLoop", "arg": [currentTime, 41.021]}), 'https://www.soundslice.com');
+      })
+}
 
 function handleForward() {
     withCurrentTime(function(currentTime) {
+      console.log('forward');
       ssiframe.postMessage(JSON.stringify({"method": "seek", "arg": currentTime + 0.1}), 'https://www.soundslice.com');
     })
 }
 
 function handleRewind() {
     withCurrentTime(function(currentTime) {
+      console.log('rewind');
       ssiframe.postMessage(JSON.stringify({"method": "seek", "arg": currentTime - 0.1}), 'https://www.soundslice.com');
     })
 }
