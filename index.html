@@ -1,24 +1,28 @@
-<!-- This is a modified version of: https://github.com/cgreenhalgh/soundslice-demo/blob/master/public/index.html/  -->
-
+<!-- Juan Martinez Avila and Chris Greenhalgh, The University of Nottingham 2020. -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Soundslice test</title>
+    <title>Strap</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+
 <div>
   <div>
     <select id="midiin">
       <option value="">(no MIDI>)</option>
     </select>
-    <input type="button" value="start" onclick="handlestart()">
-
+    <input type="button" value="Start" onclick="handleStart()">
   </div>
+
   <div>
-    <!-- Test slices -->
+    <input type="text" id="participant" value="Type your name here...">
+    <button onclick="participantID()">Submit</button>
+  </div>
+
+  <div>
     <!-- TODO Enable auto-scroll by default. Review SoundSlice iframe parameters https://www.soundslice.com/help/player-api/ -->
     <iframe id="ssembed" src="https://www.soundslice.com/slices/-zgVc/embed/?api=1" width="100%" height="500" frameBorder="0" allowfullscreen></iframe>
   </div>
@@ -45,6 +49,7 @@ function load() {
      }
   });
 }
+
 window.onload = load;
 //Handle inbound messages
 var callbacks = [];
@@ -54,7 +59,6 @@ window.addEventListener('message', function(event){
       var callback = callbacks[i];
       if (callback.method == message.method) {
         callback.callback(message.arg);
-        // callbacks = splice(i, 1);
         callbacks.splice(i, 1);
         i--;
       }
@@ -66,12 +70,7 @@ function withCurrentTime(callback) {
     ssiframe.postMessage('{"method": "getCurrentTime"}', 'https://www.soundslice.com');
 }
 
-// function withCurrentBar(callback) {
-//     callbacks.push({method:"ssCurrentBar", callback: callback});
-//     ssiframe.postMessage('{"method": "getCurrentBar"}', 'https://www.soundslice.com');
-// }
-
-function handlestart() {
+function handleStart() {
   var midiid = midiin.options[midiin.selectedIndex].value;
   if ( ! midiid ) {
     alert('Please select MIDI input');
@@ -81,10 +80,17 @@ function handlestart() {
   midiinputs[midiid].onmidimessage = handleMidiMessage;
 }
 
-//from https://stackoverflow.com/questions/40902864/how-to-parse-web-midi-api-input-messages-onmidimessage
-/**
- * Parse basic information out of a MIDI message.
- */
+function participantID() {
+  var participantID = document.getElementById("participant").value;
+  if ( ! participantID ) {
+    alert('Please enter your name');
+    return;
+  }
+  console.log('Participant ID is '+participantID);
+}
+
+
+//Parse basic information out of a MIDI message.
 function parseMidiMessage(message) {
   return {
     command: message.data[0] >> 4,
@@ -99,8 +105,7 @@ function handleMidiMessage(message) {
   const {command, channel, note, velocity} = parseMidiMessage(message)
   console.log('midi message', message);
   if (command === 11) {
-    // CC 0 Bank Select: https://www.midi.org/specifications-old/item/table-3-control-change-messages-data-bytes-2
-    // https://github.com/djipco/webmidi/blob/master/src/webmidi.js
+
     if (note === 0){
       handlePlay();
     }
