@@ -96,18 +96,18 @@ window.addEventListener('message', function(event){
 document.onkeydown = keyDown;
   function keyDown(e) {
     var event = window.event ? window.event : e;
-      if (e.keyCode == '32' && message.method =='ssPlay') {
+      if (event.keyCode == '32' && message.method =='ssPlay') {
         log.info('Space bar has been pressed to play');
       }
 
-      if (e.keyCode == '32' && message.method =='ssPause') {
+      if (event.keyCode == '32' && message.method =='ssPause') {
         log.info('Space bar has been pressed to pause');
       }
 
-      if (e.keyCode == '37' && message.method =='ssSeek') {
+      if (event.keyCode == '37' && message.method =='ssSeek') {
         log.info('Left arrow has been pressed to rewind to ' + message.arg + ' seconds.');
       }
-      if (e.keyCode == '39' && message.method =='ssSeek') {
+      if (event.keyCode == '39' && message.method =='ssSeek') {
         log.info('Right arrow has been pressed to fast forward to ' + message.arg + ' seconds.');
       }
 
