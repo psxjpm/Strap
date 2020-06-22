@@ -24,9 +24,11 @@
     <button onclick="participantID()">Submit</button>
   </div>
 
+  <!-- TODO add threshold MIDI presets-->
+
   <div>
-    <!-- TODO Enable auto-scroll by default. Review SoundSlice iframe parameters https://www.soundslice.com/help/player-api/ -->
-    <iframe id="ssembed" src="https://www.soundslice.com/slices/-zgVc/embed/?api=1" width="100%" height="500" frameBorder="0" allow=autoplay; allowfullscreen ></iframe>
+    <iframe id="ssembed" src="https://www.soundslice.com/slices/-zgVc/embed/?scroll_type=1&force_side_video=1&side_video_width=100&api=1"
+      width="100%" height="500" frameBorder="0" allow=autoplay; allowfullscreen></iframe>
   </div>
 </div>
 
@@ -52,31 +54,21 @@ function format(log) {
 remote.apply(log, {
   format: format,
   url: "/3/loglevel/strap",
-  // fix me
+  // TODO fix me ?? what does this do?? how does it relate with the uuid
   token: "1EpP1BXoLQmscEvA4lM01M7pwxBF-jbX"
 });
-
-// document.onmousedown = mouseDown;
-document.onkeydown = keyDown;
-
-  // function mouseDown() {log.info('click')}
-
-  function keyDown(e) {
-    var event = window.event ? window.event : e;
-      log.info(event.keyCode)
-    }
 
 // log info and above
 log.setLevel("info");
 
 function load() {
-  console.log("load event detected!");
+  // console.log("load event detected!");
   navigator.requestMIDIAccess()
   .then(function(access) {
      // Get lists of available MIDI controllers
      const inputs = access.inputs.values();
      for (let input of inputs) {
-       console.log('MIDI input:', input);
+       // console.log('MIDI input:', input);
        var option = document.createElement("option");
        option.text = input.name;
        option.setAttribute('value', input.id);
@@ -100,26 +92,46 @@ window.addEventListener('message', function(event){
       }
     }
 
-      if (message.method == 'ssPlay') {
-        log.info('Play has started.')
+//TODO make this readable - combine this with player events
+document.onkeydown = keyDown;
+  function keyDown(e) {
+    var event = window.event ? window.event : e;
+      if (e.keyCode == '32' && message.method =='ssPlay') {
+        log.info('Space bar has been pressed to play');
       }
 
-      if (message.method == 'ssPause') {
-        log.info('Play has stopped.')
+      if (e.keyCode == '32' && message.method =='ssPause') {
+        log.info('Space bar has been pressed to pause');
       }
 
-      if (message.method == 'ssSeek') {
-        log.info('Play has seeked to ' + message.arg + ' seconds.')
+      if (e.keyCode == '37' && message.method =='ssSeek') {
+        log.info('Left arrow has been pressed to rewind to ' + message.arg + ' seconds.');
       }
+      if (e.keyCode == '39' && message.method =='ssSeek') {
+        log.info('Right arrow has been pressed to fast forward to ' + message.arg + ' seconds.');
+      }
+
+    }
+
+      // if (message.method == 'ssPlay') {
+      //   log.info('Play button has been pressed.');
+      // }
+      //
+      // if (message.method == 'ssPause') {
+      //   log.info('Pause button has been pressed.');
+      // }
+
+      // if (message.method == 'ssSeek') {
+      //   log.info('Header has seeked to ' + message.arg + ' seconds.');
+      // }
 
       if (message.method == 'ssLoopChange') {
-        log.info('Loop has changed to ' + message.arg)
+        log.info('Loop has changed to ' + message.arg);
       }
 
       if (message.method == 'ssSpeed') {
-        log.info('Speed is ' + (message.arg * 100) + ' percent.')
+        log.info('Speed is ' + (message.arg * 100) + ' percent.');
       }
-
 });
 
 function withCurrentTime(callback) {
@@ -133,7 +145,7 @@ function handleStart() {
     alert('Please select MIDI input');
     return;
   }
-  console.log('use MIDI input '+midiid);
+  // console.log('use MIDI input '+midiid);
   midiinputs[midiid].onmidimessage = handleMidiMessage;
 }
 
@@ -145,7 +157,6 @@ function participantID() {
   }
   log.info('Participant: '+participantID);
 }
-
 
 //Parse basic information out of a MIDI message.
 function parseMidiMessage(message) {
@@ -202,53 +213,53 @@ function handleMidiMessage(message) {
 }
 
 function handlePlay() {
-  log.info('play');
+  log.info('Play event triggered by strap');
   ssiframe.postMessage('{"method": "play"}', 'https://www.soundslice.com');
 }
 
 function handlePause() {
-  log.info('pause');
+  log.info('Pause event triggered by strap');
   ssiframe.postMessage('{"method": "pause"}', 'https://www.soundslice.com');
 }
 
 function handleLoop() {
     withCurrentTime(function(currentTime) {
-        log.info('loop');
+        log.info('Loop event triggered by strap');
         ssiframe.postMessage(JSON.stringify({"method": "setLoop", "arg": [currentTime, 41.021]}), 'https://www.soundslice.com');
       })
 }
 
 function handleForward() {
     withCurrentTime(function(currentTime) {
-      log.info('forward');
+      log.info('Seek to fast forward event triggered by strap');
       ssiframe.postMessage(JSON.stringify({"method": "seek", "arg": currentTime + 0.1}), 'https://www.soundslice.com');
     })
 }
 
 function handleRewind() {
     withCurrentTime(function(currentTime) {
-      log.info('rewind');
+      log.info('Seek to rewind event triggered by strap');
       ssiframe.postMessage(JSON.stringify({"method": "seek", "arg": currentTime - 0.1}), 'https://www.soundslice.com');
     })
 }
 
 function handleSpeed100() {
-  log.info('speed: 100');
+  log.info('Speed set to 100 by strap');
   ssiframe.postMessage('{"method": "setSpeed", "arg": 1}', 'https://www.soundslice.com');
 }
 
 function handleSpeed75() {
-  log.info('speed: 75');
+  log.info('Speed set to 75 by strap');
   ssiframe.postMessage('{"method": "setSpeed", "arg": 0.75}', 'https://www.soundslice.com');
 }
 
 function handleSpeed50() {
-  log.info('speed: 50');
+  log.info('Speed set to 50 by strap');
   ssiframe.postMessage('{"method": "setSpeed", "arg": 0.5}', 'https://www.soundslice.com');
 }
 
 function handleSpeed25() {
-  log.info('speed: 25');
+  log.info('Speed set to 25 by strap');
   ssiframe.postMessage('{"method": "setSpeed", "arg": 0.25}', 'https://www.soundslice.com');
 }
 
