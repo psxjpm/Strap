@@ -177,6 +177,7 @@ function handleLow() {
     return;
   }
   lowMIDI( midiid );
+    log.info('Threshold set to low');
 }
 function lowMIDI( portID ) {
   var noteOnMessage = [0xB0, 09, 0x00];
@@ -191,6 +192,7 @@ function handleMedium() {
     return;
   }
   mediumMIDI( midiid );
+  log.info('Threshold set to medium');
 }
 function mediumMIDI( portID ) {
   var noteOnMessage = [0xB0, 10, 0x00];
@@ -205,6 +207,7 @@ function handleHigh() {
     return;
   }
   highMIDI( midiid );
+  log.info('Threshold set to high');
 }
 function highMIDI( portID ) {
   var noteOnMessage = [0xB0, 11, 0x00];
