@@ -14,7 +14,14 @@
 <div>
   <div>
     <select id="midiin">
-      <option value="">(no MIDI>)</option>
+      <option value="">(no MIDI IN)</option>
+    </select>
+    <input type="button" value="Start" onclick="handleStart()">
+  </div>
+
+  <div>
+    <select id="midiout">
+      <option value="">(no MIDI OUT)</option>
     </select>
     <input type="button" value="Start" onclick="handleStart()">
   </div>
@@ -24,7 +31,11 @@
     <button onclick="participantID()">Submit</button>
   </div>
 
-  <!-- TODO add threshold MIDI presets-->
+  <div>
+    <button onclick="handleLow()">Low</button>
+    <button onclick="handleMedium()">Medium</button>
+    <button onclick="handleHigh()">High</button>
+  </div>
 
   <div>
     <iframe id="ssembed" src="https://www.soundslice.com/slices/-zgVc/embed/?scroll_type=1&force_side_video=1&side_video_width=100&api=1"
@@ -35,7 +46,9 @@
 <script type="text/javascript">
 var ssiframe = document.getElementById('ssembed').contentWindow;
 var midiin = document.getElementById("midiin");
+var midiout = document.getElementById("midiout");
 var midiinputs = {};
+var midioutputs = {};
 
 function uuidv4() {
   return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
@@ -75,6 +88,19 @@ function load() {
        midiin.add(option);
        midiinputs[input.id] = input;
      }
+  // });
+  //
+  // navigator.requestMIDIAccess()
+  // .then(function(access) {
+       const outputs = access.outputs.values();
+       for (let output of outputs) {
+         // console.log('MIDI output:', output);
+         var option = document.createElement("option");
+         option.text = output.name;
+         option.setAttribute('value', output.id);
+         midiout.add(option);
+         midioutputs[output.id] = output;
+       }
   });
 }
 
@@ -113,18 +139,6 @@ document.onkeydown = keyDown;
 
     }
 
-      // if (message.method == 'ssPlay') {
-      //   log.info('Play button has been pressed.');
-      // }
-      //
-      // if (message.method == 'ssPause') {
-      //   log.info('Pause button has been pressed.');
-      // }
-
-      // if (message.method == 'ssSeek') {
-      //   log.info('Header has seeked to ' + message.arg + ' seconds.');
-      // }
-
       if (message.method == 'ssLoopChange') {
         log.info('Loop has changed to ' + message.arg);
       }
@@ -142,13 +156,64 @@ function withCurrentTime(callback) {
 function handleStart() {
   var midiid = midiin.options[midiin.selectedIndex].value;
   if ( ! midiid ) {
-    alert('Please select MIDI input');
+    alert('Please select MIDI input and output');
     return;
   }
   // console.log('use MIDI input '+midiid);
   midiinputs[midiid].onmidimessage = handleMidiMessage;
 }
 
+// function handleMIDIOUT() {
+//   var midiid = midiout.options[midiout.selectedIndex].value;
+//   if ( ! midiid ) {
+//     alert('Please select MIDI output');
+//     return;
+//   }
+//   // console.log('use MIDI input '+midiid);
+//   midioutputs[midiid].onmidimessage = handleMidiMessage;
+// }
+
+function handleLow() {
+  var midiid = midiout.options[midiout.selectedIndex].value;
+  if ( ! midiid ) {
+    alert('Please select MIDI output');
+    return;
+  }
+  lowMIDI( midiid );
+}
+function lowMIDI( portID ) {
+  var noteOnMessage = [0xB0, 09, 0x00];
+  var output = midioutputs[portID];
+  output.send( noteOnMessage );
+}
+
+function handleMedium() {
+  var midiid = midiout.options[midiout.selectedIndex].value;
+  if ( ! midiid ) {
+    alert('Please select MIDI output');
+    return;
+  }
+  mediumMIDI( midiid );
+}
+function mediumMIDI( portID ) {
+  var noteOnMessage = [0xB0, 10, 0x00];
+  var output = midioutputs[portID];
+  output.send( noteOnMessage );
+}
+
+function handleHigh() {
+  var midiid = midiout.options[midiout.selectedIndex].value;
+  if ( ! midiid ) {
+    alert('Please select MIDI output');
+    return;
+  }
+  highMIDI( midiid );
+}
+function highMIDI( portID ) {
+  var noteOnMessage = [0xB0, 11, 0x00];
+  var output = midioutputs[portID];
+  output.send( noteOnMessage );
+}
 function participantID() {
   var participantID = document.getElementById("participant").value;
   if ( ! participantID ) {
@@ -171,7 +236,8 @@ function handleMidiMessage(message) {
 
   // Parse the MIDIMessageEvent.
   const {command, channel, note, velocity} = parseMidiMessage(message)
-  console.log('midi message', message);
+  // console.log('midi message', message);
+
   if (command === 11) {
 
     if (note === 0){
