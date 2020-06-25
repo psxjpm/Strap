@@ -1,41 +1,67 @@
-#N canvas 173 239 450 346 10;
-#X text 242 108 Rewind;
-#X text 243 78 Loop;
-#X text 243 45 Play/Pause;
-#X text 242 142 Forward;
-#X obj 21 44 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
-#X obj 47 44 handlePlayPause-test~ 0 1;
-#X text 240 173 Speed 100;
-#X text 239 203 Speed 75;
-#X text 240 235 Speed 50;
-#X text 239 261 Speed 25;
-#X obj 21 107 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
-#X obj 22 139 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
-#X obj 23 201 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
-#X obj 20 75 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
-#X obj 24 232 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
-#X obj 23 260 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
-#X obj 22 173 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
-#X obj 47 76 abstraction-test~ 2;
-#X obj 47 107 abstraction-test~ 3;
-#X obj 47 139 abstraction-test~ 4;
-#X obj 47 172 abstraction-test~ 5;
-#X obj 47 202 abstraction-test~ 6;
-#X obj 47 231 abstraction-test~ 7;
-#X obj 46 258 abstraction-test~ 8;
-#X connect 4 0 5 0;
-#X connect 10 0 18 0;
-#X connect 11 0 19 0;
-#X connect 12 0 21 0;
-#X connect 13 0 17 0;
-#X connect 14 0 22 0;
-#X connect 15 0 23 0;
-#X connect 16 0 20 0;
+#N canvas 263 180 777 374 10;
+#X obj 329 181 s outputSmooth;
+#X obj 329 129 loadbang;
+#X msg 329 156 100;
+#X text 403 142 <<< set the smoothing of the analog output;
+#X text 403 152 this is the cutoff frequency of a low-pass filter \,
+;
+#X text 403 162 so 22050 means no smoothing!;
+#X obj 328 238 loadbang;
+#X obj 328 263 metro 50;
+#X text 395 262 <<< how often to sample the analog inputs (ms);
+#X obj 329 286 s analogInputTick;
+#X obj 329 20 loadbang;
+#X msg 329 46 hw 0 0 0;
+#X obj 329 73 send bela_setMidi;
+#X text 429 33 << enable MIDI communication with the host computer
+;
+#X text 429 43 over USB (requires Bela image v0.3 or above);
+#X text 461 60 Open the host-send-receive patch on the host;
+#X text 461 70 to receive the MIDI data;
+#X text 23 19 analog inputs to MIDI;
+#X text 170 47 Play / pause;
+#X text 142 77 Loop;
+#X text 142 108 Forward;
+#X text 142 137 Rewind;
+#X text 140 204 Speed75;
+#X text 139 233 Speed50;
+#X text 137 264 Speed25;
+#X text 141 169 Speed100 (Enabler);
+#X obj 24 46 handlePlayPause~ 7 0 1;
+#X obj 23 77 adcToCtlout~ 8 2;
+#X obj 23 107 handleSeek~ 8 6 3;
+#X obj -34 47 dac~ 27;
+#X obj -34 77 dac~ 28;
+#X obj -32 106 dac~ 29;
+#X obj -33 135 dac~ 30;
+#X obj -35 168 dac~ 31;
+#X obj -34 202 dac~ 32;
+#X obj -33 231 dac~ 33;
+#X obj -33 260 dac~ 34;
+#X obj 23 232 adcToCtlout~ 9 7;
+#X obj 22 261 adcToCtlout~ 10 8;
+#X obj 23 203 adcToCtlout~ 5 6;
+#X obj 23 169 adcToCtlout~ 6 5;
+#X obj 23 135 handleSeek~ 7 6 4;
+#X obj 229 29 updateThreshold;
+#X obj 227 63 updateThreshold;
+#X connect 1 0 2 0;
+#X connect 2 0 0 0;
+#X connect 6 0 7 0;
+#X connect 7 0 9 0;
+#X connect 10 0 11 0;
+#X connect 11 0 12 0;
+#X connect 26 0 29 0;
+#X connect 27 0 30 0;
+#X connect 28 0 31 0;
+#X connect 37 0 35 0;
+#X connect 38 0 36 0;
+#X connect 39 0 34 0;
+#X connect 40 0 33 0;
+#X connect 41 0 32 0;
+#X connect 42 0 26 0;
+#X connect 42 1 26 0;
+#X connect 42 2 26 0;
+#X connect 43 0 27 0;
+#X connect 43 1 27 0;
+#X connect 43 2 27 0;
