@@ -1,49 +1,3 @@
-<!-- Juan Martinez Avila and Chris Greenhalgh, The University of Nottingham 2020. -->
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Strap</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <script src="loglevel.min.js"></script>
-    <script src="loglevel-plugin-remote.min.js"></script>
-
-<div>
-  <div>
-    <select id="midiin">
-      <option value="">(no MIDI IN)</option>
-    </select>
-    <input type="button" value="Start" onclick="handleMIDIIN()">
-  </div>
-
-  <div>
-    <select id="midiout">
-      <option value="">(no MIDI OUT)</option>
-    </select>
-    <input type="button" value="Start" onclick="handleMIDIOUT()">
-  </div>
-
-  <div>
-    <input type="text" id="participant" value="Type your name here...">
-    <button onclick="participantID()">Submit</button>
-  </div>
-
-  <div>
-    <button onclick="handleLow()">Low</button>
-    <button onclick="handleMedium()">Medium</button>
-    <button onclick="handleHigh()">High</button>
-  </div>
-
-  <div>
-    <iframe id="ssembed" src="https://www.soundslice.com/slices/-zgVc/embed/?scroll_type=1&force_side_video=1&side_video_width=100&api=1"
-      width="100%" height="500" frameBorder="0" allow=autoplay; allowfullscreen></iframe>
-  </div>
-</div>
-
-<script type="text/javascript">
 var ssiframe = document.getElementById('ssembed').contentWindow;
 var midiin = document.getElementById("midiin");
 var midiout = document.getElementById("midiout");
@@ -58,6 +12,7 @@ function uuidv4() {
 // unique logging ID for this session/window
 var uuid = uuidv4();
 console.log('my uuid: '+uuid);
+
 function format(log) {
   log.level = log.level.label;
   log.windowid = uuid;
@@ -105,17 +60,16 @@ window.onload = load;
 //Handle inbound messages
 var callbacks = [];
 window.addEventListener('message', function(event){
-    var message = JSON.parse(event.data);
-    for (var i=0; i<callbacks.length; i++) {
-      var callback = callbacks[i];
-      if (callback.method == message.method) {
-        callback.callback(message.arg);
-        callbacks.splice(i, 1);
-        i--;
-      }
-    }
+  var message = JSON.parse(event.data);
+  for (var i=0; i<callbacks.length; i++) {
+    var callback = callbacks[i];
+    if (callback.method == message.method) {
+      callback.callback(message.arg);
+      callbacks.splice(i, 1);
+      i--;
+    }
+  }
 
-//TODO make this readable - combine this with player events
 document.onkeydown = keyDown;
   function keyDown(e) {
     var event = window.event ? window.event : e;
@@ -133,8 +87,7 @@ document.onkeydown = keyDown;
       if (event.keyCode == '39' && message.method =='ssSeek') {
         log.info('Right arrow has been pressed to fast forward to ' + message.arg + ' seconds.');
       }
-
-    }
+  }
 
       if (message.method == 'ssLoopChange') {
         log.info('Loop has changed to ' + message.arg);
@@ -143,22 +96,22 @@ document.onkeydown = keyDown;
       if (message.method == 'ssSpeed') {
         log.info('Speed is ' + (message.arg * 100) + ' percent.');
       }
-});
+  });
 
 function withCurrentTime(callback) {
     callbacks.push({method:"ssCurrentTime", callback: callback});
     ssiframe.postMessage('{"method": "getCurrentTime"}', 'https://www.soundslice.com');
-}
+  }
 
 function handleMIDIIN() {
   var midiid = midiin.options[midiin.selectedIndex].value;
   if ( ! midiid ) {
     alert('Please select MIDI input');
     return;
-  }
+    }
   // console.log('use MIDI input '+midiid);
   midiinputs[midiid].onmidimessage = handleMidiMessage;
-}
+  }
 
 function handleMIDIOUT() {
   var midiid = midiout.options[midiout.selectedIndex].value;
@@ -194,6 +147,7 @@ function handleMedium() {
   mediumMIDI( midiid );
   log.info('Threshold set to medium');
 }
+
 function mediumMIDI( portID ) {
   var noteOnMessage = [0xB0, 10, 0x00];
   var output = midioutputs[portID];
@@ -209,11 +163,13 @@ function handleHigh() {
   highMIDI( midiid );
   log.info('Threshold set to high');
 }
+
 function highMIDI( portID ) {
   var noteOnMessage = [0xB0, 11, 0x00];
   var output = midioutputs[portID];
   output.send( noteOnMessage );
 }
+
 function participantID() {
   var participantID = document.getElementById("participant").value;
   if ( ! participantID ) {
@@ -232,12 +188,11 @@ function parseMidiMessage(message) {
     velocity: message.data[2] / 127
   }
 }
-function handleMidiMessage(message) {
 
+function handleMidiMessage(message) {
   // Parse the MIDIMessageEvent.
   const {command, channel, note, velocity} = parseMidiMessage(message)
   // console.log('midi message', message);
-
   if (command === 11) {
 
     if (note === 0){
@@ -328,7 +283,3 @@ function handleSpeed25() {
   log.info('Speed set to 25 by strap');
   ssiframe.postMessage('{"method": "setSpeed", "arg": 0.25}', 'https://www.soundslice.com');
 }
-
-</script>
-  </body>
-</html>
