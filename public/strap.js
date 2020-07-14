@@ -208,27 +208,31 @@ function handleMidiMessage(message) {
     }
 
     if (note === 3) {
-      handleForward();
-    }
-
-    if (note === 4) {
+      // handleForward();
       handleRewind();
     }
 
+    if (note === 4) {
+      // handleRewind();
+      handleForward();
+    }
+
     if (note === 5) {
-      handleSpeed100();
+      // handleSpeed100();
+      handleRestart();
+
     }
 
     if (note === 6) {
-      handleSpeed75();
+      // handleSpeed75();
     }
 
     if (note === 7) {
-      handleSpeed50();
+      // handleSpeed50();
     }
 
     if (note === 8) {
-      handleSpeed25();
+      // handleSpeed25();
     }
   }
 }
@@ -262,6 +266,10 @@ function handleRewind() {
       log.info('Seek to rewind event triggered by strap');
       ssiframe.postMessage(JSON.stringify({"method": "seek", "arg": currentTime - 0.1}), 'https://www.soundslice.com');
     })
+}
+
+function handleRestart() {
+  ssiframe.postMessage(JSON.stringify({"method": "seek", "arg": 0.0}), 'https://www.soundslice.com');
 }
 
 function handleSpeed100() {
