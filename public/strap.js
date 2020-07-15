@@ -224,7 +224,7 @@ function handleMidiMessage(message) {
     }
 
     if (note === 6) {
-      // handleSpeed75();
+      clearLoop();
     }
 
     if (note === 7) {
@@ -252,6 +252,10 @@ function handleLoop() {
         log.info('Loop event triggered by strap');
         ssiframe.postMessage(JSON.stringify({"method": "setLoop", "arg": [currentTime, 41.021]}), 'https://www.soundslice.com');
       })
+}
+
+function clearLoop(){
+  ssiframe.postMessage('{"method": "clearLoop"}', 'https://www.soundslice.com');
 }
 
 function handleForward() {
