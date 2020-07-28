@@ -123,6 +123,7 @@ function handleMIDIOUT() {
   midioutputs[midiid].onmidimessage = handleMidiMessage;
 }
 
+//Front threshold
 function handleLow() {
   var midiid = midiout.options[midiout.selectedIndex].value;
   if ( ! midiid ) {
@@ -130,7 +131,7 @@ function handleLow() {
     return;
   }
   lowMIDI( midiid );
-    log.info('Threshold set to low');
+    log.info('Front threshold decremented');
 }
 function lowMIDI( portID ) {
   var noteOnMessage = [0xB0, 09, 0x00];
@@ -145,7 +146,7 @@ function handleMedium() {
     return;
   }
   mediumMIDI( midiid );
-  log.info('Threshold set to medium');
+  log.info('Front threshold reset');
 }
 
 function mediumMIDI( portID ) {
@@ -161,7 +162,56 @@ function handleHigh() {
     return;
   }
   highMIDI( midiid );
-  log.info('Threshold set to high');
+  log.info('Front threshold incremented');
+}
+
+function highMIDI( portID ) {
+  var noteOnMessage = [0xB0, 11, 0x00];
+  var output = midioutputs[portID];
+  output.send( noteOnMessage );
+}
+
+
+//Back threshold
+function handleLowB() {
+  var midiid = midiout.options[midiout.selectedIndex].value;
+  if ( ! midiid ) {
+    alert('Please select MIDI output');
+    return;
+  }
+  lowMIDIB( midiid );
+    log.info('Back threshold decremented');
+}
+function lowMIDI( portID ) {
+  var noteOnMessage = [0xB0, 09, 0x00];
+  var output = midioutputs[portID];
+  output.send( noteOnMessage );
+}
+
+function handleMedium() {
+  var midiid = midiout.options[midiout.selectedIndex].value;
+  if ( ! midiid ) {
+    alert('Please select MIDI output');
+    return;
+  }
+  mediumMIDI( midiid );
+  log.info('Back threshold reset');
+}
+
+function mediumMIDI( portID ) {
+  var noteOnMessage = [0xB0, 10, 0x00];
+  var output = midioutputs[portID];
+  output.send( noteOnMessage );
+}
+
+function handleHigh() {
+  var midiid = midiout.options[midiout.selectedIndex].value;
+  if ( ! midiid ) {
+    alert('Please select MIDI output');
+    return;
+  }
+  highMIDI( midiid );
+  log.info('Back threshold incremented');
 }
 
 function highMIDI( portID ) {

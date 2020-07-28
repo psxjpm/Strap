@@ -6,45 +6,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Strap</title>
   </head>
+
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <script src="loglevel.min.js"></script>
+  <script src="loglevel-plugin-remote.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+  <header class="w3-container w3-blue">
+      <div class = "w3-row">
+        <div class = "w3-col m3">
+            <select id="midiin">
+              <option value="">(no MIDI IN)</option>
+            </select>
+            <input type="button" value="Start" onclick="handleMIDIIN()">
+
+            <select id="midiout">
+              <option value="">(no MIDI OUT)</option>
+            </select>
+            <input type="button" value="Start" onclick="handleMIDIOUT()">
+        </div>
+      <div class = "w3-col m6 w3-center">
+          <input type="text" id="participant" value="Type your name here...">
+          <button onclick="participantID()">Submit</button>
+      </div>
+
+      <div class = "w3-col m3">
+        <div>
+          <b>Front threshold </b>
+          <button onclick="handleMedium()"> Reset </button>
+          <button onclick="handleLow()"> - </button>
+          <button onclick="handleHigh()"> + </button>
+          <text id="fThreshold">Foo</text>
+          <script>
+            document.getElementById("fThreshold").innerHTML = "0.26";
+          </script>
+        </div>
+
+        <div>
+          <b>Back threshold </b>
+          <button onclick="handleMedium()"> Reset </button>
+          <button onclick="handleLow()"> - </button>
+          <button onclick="handleHigh()"> + </button>
+          <text id="bThreshold">Foo</text>
+          <script>
+            document.getElementById("bThreshold").innerHTML = "0.26";
+          </script>
+        </div>
+      </div>
+    </div>
+  </header>
+
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <script src="loglevel.min.js"></script>
-    <script src="loglevel-plugin-remote.min.js"></script>
-    <link rel="stylesheet" href="styles.css">
-
-    <div>
-      <div>
-        <select id="midiin">
-          <option value="">(no MIDI IN)</option>
-        </select>
-        <input type="button" value="Start" onclick="handleMIDIIN()">
-      </div>
-
-      <div>
-        <select id="midiout">
-          <option value="">(no MIDI OUT)</option>
-        </select>
-        <input type="button" value="Start" onclick="handleMIDIOUT()">
-      </div>
-
-      <div>
-        <input type="text" id="participant" value="Type your name here...">
-        <button onclick="participantID()">Submit</button>
-      </div>
-
-      <div>
-        <button onclick="handleLow()">Low</button>
-        <button onclick="handleMedium()">Medium</button>
-        <button onclick="handleHigh()">High</button>
-      </div>
-
-      <div>
-        <iframe id="ssembed" src="https://www.soundslice.com/slices/-zgVc/embed/?scroll_type=1&force_side_video=1&side_video_width=100&api=1"
-          width="100%" height="500" frameBorder="0" allow=autoplay; allowfullscreen></iframe>
-      </div>
+    <div class="iframe-container">
+      <iframe id="ssembed" src="https://www.soundslice.com/slices/lmDfc/embed/?scroll_type=1&force_side_video=1&side_video_width=100&api=1"
+      width="100%" height="100%" frameBorder="0" allow=autoplay; allowfullscreen></iframe>
     </div>
 
     <script src="strap.js"></script>
-
   </body>
+
+  <footer class="w3-container w3-blue">
+      <p>Juan Martinez Avila and Chris Greenhalgh, The University of Nottingham 2020.</p>
+  </footer>
 </html>
