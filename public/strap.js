@@ -131,7 +131,11 @@ function handleLow() {
     return;
   }
   lowMIDI( midiid );
-    log.info('Front threshold decremented');
+  log.info('Front threshold decremented');
+  var value = parseFloat(document.getElementById('fThreshold').value, 10);
+  value = isNaN(value) ? 0 : value;
+  value -= 0.01;
+  document.getElementById('fThreshold').value = value.toPrecision(2);
 }
 function lowMIDI( portID ) {
   var noteOnMessage = [0xB0, 09, 0x00];
@@ -147,6 +151,7 @@ function handleMedium() {
   }
   mediumMIDI( midiid );
   log.info('Front threshold reset');
+  document.getElementById("fThreshold").value = "0.23";
 }
 
 function mediumMIDI( portID ) {
@@ -163,6 +168,10 @@ function handleHigh() {
   }
   highMIDI( midiid );
   log.info('Front threshold incremented');
+  var value = parseFloat(document.getElementById('fThreshold').value, 10);
+  value = isNaN(value) ? 0 : value;
+  value += 0.01;
+  document.getElementById('fThreshold').value = value.toPrecision(2);
 }
 
 function highMIDI( portID ) {
@@ -181,41 +190,50 @@ function handleLowB() {
   }
   lowMIDIB( midiid );
     log.info('Back threshold decremented');
+    var value = parseFloat(document.getElementById('bThreshold').value, 10);
+    value = isNaN(value) ? 0 : value;
+    value -= 0.01;
+    document.getElementById('bThreshold').value = value.toPrecision(2);
 }
-function lowMIDI( portID ) {
-  var noteOnMessage = [0xB0, 09, 0x00];
+function lowMIDIB( portID ) {
+  var noteOnMessage = [0xB0, 12, 0x00];
   var output = midioutputs[portID];
   output.send( noteOnMessage );
 }
 
-function handleMedium() {
+function handleMediumB() {
   var midiid = midiout.options[midiout.selectedIndex].value;
   if ( ! midiid ) {
     alert('Please select MIDI output');
     return;
   }
-  mediumMIDI( midiid );
+  mediumMIDIB( midiid );
   log.info('Back threshold reset');
+  document.getElementById("bThreshold").value = "0.26";
 }
 
-function mediumMIDI( portID ) {
-  var noteOnMessage = [0xB0, 10, 0x00];
+function mediumMIDIB( portID ) {
+  var noteOnMessage = [0xB0, 13, 0x00];
   var output = midioutputs[portID];
   output.send( noteOnMessage );
 }
 
-function handleHigh() {
+function handleHighB() {
   var midiid = midiout.options[midiout.selectedIndex].value;
   if ( ! midiid ) {
     alert('Please select MIDI output');
     return;
   }
-  highMIDI( midiid );
+  highMIDIB( midiid );
   log.info('Back threshold incremented');
+  var value = parseFloat(document.getElementById('bThreshold').value, 10);
+  value = isNaN(value) ? 0 : value;
+  value += 0.01;
+  document.getElementById('bThreshold').value = value.toPrecision(2);
 }
 
-function highMIDI( portID ) {
-  var noteOnMessage = [0xB0, 11, 0x00];
+function highMIDIB( portID ) {
+  var noteOnMessage = [0xB0, 14, 0x00];
   var output = midioutputs[portID];
   output.send( noteOnMessage );
 }
@@ -259,7 +277,7 @@ function handleMidiMessage(message) {
 
     if (note === 3) {
       // handleForward();
-      handleRewind();
+      // handleRewind();
     }
 
     if (note === 4) {
@@ -269,7 +287,8 @@ function handleMidiMessage(message) {
 
     if (note === 5) {
       // handleSpeed100();
-      handleRestart();
+      // handleRestart();
+      handleRewind();
 
     }
 
@@ -300,7 +319,7 @@ function handlePause() {
 function handleLoop() {
     withCurrentTime(function(currentTime) {
         log.info('Loop event triggered by strap');
-        ssiframe.postMessage(JSON.stringify({"method": "setLoop", "arg": [currentTime, 41.021]}), 'https://www.soundslice.com');
+        ssiframe.postMessage(JSON.stringify({"method": "setLoop", "arg": [currentTime, 74]}), 'https://www.soundslice.com');
       })
 }
 
@@ -311,14 +330,14 @@ function clearLoop(){
 function handleForward() {
     withCurrentTime(function(currentTime) {
       log.info('Seek to fast forward event triggered by strap');
-      ssiframe.postMessage(JSON.stringify({"method": "seek", "arg": currentTime + 0.1}), 'https://www.soundslice.com');
+      ssiframe.postMessage(JSON.stringify({"method": "seek", "arg": currentTime + 1}), 'https://www.soundslice.com');
     })
 }
 
 function handleRewind() {
     withCurrentTime(function(currentTime) {
       log.info('Seek to rewind event triggered by strap');
-      ssiframe.postMessage(JSON.stringify({"method": "seek", "arg": currentTime - 0.1}), 'https://www.soundslice.com');
+      ssiframe.postMessage(JSON.stringify({"method": "seek", "arg": currentTime - 1}), 'https://www.soundslice.com');
     })
 }
 

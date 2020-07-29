@@ -27,7 +27,7 @@
             <input type="button" value="Start" onclick="handleMIDIOUT()">
         </div>
       <div class = "w3-col m6 w3-center">
-          <input type="text" id="participant" value="Type your name here...">
+          <input type="text" id="participant" placeholder="Your name">
           <button onclick="participantID()">Submit</button>
       </div>
 
@@ -37,21 +37,15 @@
           <button onclick="handleMedium()"> Reset </button>
           <button onclick="handleLow()"> - </button>
           <button onclick="handleHigh()"> + </button>
-          <text id="fThreshold">Foo</text>
-          <script>
-            document.getElementById("fThreshold").innerHTML = "0.26";
-          </script>
+          <input type="text" id="fThreshold" value="0.23"/>
         </div>
 
         <div>
           <b>Back threshold </b>
-          <button onclick="handleMedium()"> Reset </button>
-          <button onclick="handleLow()"> - </button>
-          <button onclick="handleHigh()"> + </button>
-          <text id="bThreshold">Foo</text>
-          <script>
-            document.getElementById("bThreshold").innerHTML = "0.26";
-          </script>
+          <button onclick="handleMediumB()"> Reset </button>
+          <button onclick="handleLowB()"> - </button>
+          <button onclick="handleHighB()"> + </button>
+          <input type="text" id="bThreshold" value="0.26"/>
         </div>
       </div>
     </div>
