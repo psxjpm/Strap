@@ -325,6 +325,7 @@ function handleLoop() {
 
 function clearLoop(){
   ssiframe.postMessage('{"method": "clearLoop"}', 'https://www.soundslice.com');
+  log.info('Loop cancel by strap');
 }
 
 function handleForward() {
