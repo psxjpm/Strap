@@ -247,6 +247,16 @@ function participantID() {
   log.info('Participant: '+participantID);
 }
 
+function roundType() {
+  var roundType = document.getElementById("roundType").value;
+  if ( ! roundType ) {
+    alert('Practice or Evaluation?');
+    return;
+  }
+  log.info('Participant has begun '+roundType);
+}
+
+
 //Parse basic information out of a MIDI message.
 function parseMidiMessage(message) {
   return {
