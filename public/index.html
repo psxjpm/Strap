@@ -16,22 +16,28 @@
   <header class="w3-container w3-blue">
       <div class = "w3-row">
         <div class = "w3-col m3">
+          <div>
             <select id="midiin">
               <option value="">(no MIDI IN)</option>
             </select>
             <input type="button" value="Start" onclick="handleMIDIIN()">
-
+          </div>
+          <div>
             <select id="midiout">
               <option value="">(no MIDI OUT)</option>
             </select>
             <input type="button" value="Start" onclick="handleMIDIOUT()">
+         </div>      
         </div>
       <div class = "w3-col m6 w3-center">
+        <div>
           <input type="text" id="participant" placeholder="Your name">
           <button onclick="participantID()">Submit</button>
-
+        </div>
+        <div>
           <input type="text" id="roundType" placeholder="Practice or Evaluation round?">
           <button onclick="roundType()">Submit</button>
+        </div>
       </div>
 
       <div class = "w3-col m3">
