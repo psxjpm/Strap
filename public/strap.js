@@ -36,7 +36,7 @@ function load() {
      // Get lists of available MIDI controllers
      const inputs = access.inputs.values();
      for (let input of inputs) {
-       // console.log('MIDI input:', input);
+       log.info('MIDI input:', input);
        var option = document.createElement("option");
        option.text = input.name;
        option.setAttribute('value', input.id);
@@ -46,7 +46,7 @@ function load() {
 
     const outputs = access.outputs.values();
       for (let output of outputs) {
-        // console.log('MIDI output:', output);
+       log.info('MIDI output:', output);
        var option = document.createElement("option");
        option.text = output.name;
        option.setAttribute('value', output.id);
@@ -329,7 +329,7 @@ function handlePause() {
 function handleLoop() {
     withCurrentTime(function(currentTime) {
         log.info('Loop event triggered by strap');
-        ssiframe.postMessage(JSON.stringify({"method": "setLoop", "arg": [currentTime, 74]}), 'https://www.soundslice.com');
+        ssiframe.postMessage(JSON.stringify({"method": "setLoop", "arg": [currentTime, 247.481]}), 'https://www.soundslice.com');
       })
 }
 
